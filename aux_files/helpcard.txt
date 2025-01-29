@@ -1,0 +1,1139 @@
+= City Garden =
+
+This node creates customizable garden structures inspired by the [Supertree Grove|https://www.gardensbythebay.com.sg/en/things-to-do/attractions/supertree-grove.html] at Singapore's iconic [Gardens by the Bay|https://www.gardensbythebay.com.sg].
+
+Day Reference || 
+    Night Reference||
+
+[Image:city_garden::1.0/grove-day.jpg] || 
+    [Image:city_garden::1.0/grove-eve.jpg] ||
+    
+[Image:city_garden::1.0/grove-close-day.jpg] || 
+    [Image:city_garden::1.0/grove-close-eve.jpg] ||
+
+== Overview ==
+
+This tool is designed for users looking to create detailed and customizable garden visuals for architectural rendering.
+
+:fig: [Image:city_garden::1.0/garden-example.png]
+    #display: half left
+    """Example of a finished user-generated garden"""
+
+:fig: [Image:city_garden::1.0/garden-ex-fireworks.png]
+    #display: half left
+    """Example of a finished user-generated garden with fireworks"""
+
+The video below is a *demo* for how the tool can be used:
+:video:
+    #src: city_garden::1.0/houdini-demo3.mp4
+
+NOTE:
+    If the video does not load, please open the help card in a web browser.
+    
+== Visualizing the results ==
+
+This node has two outputs -- `(0) garden` and `(1) fireworks`.
+
+[Image:city_garden::1.0/city-garden-node.png]
+
+The best way to visualize both with good performance is to:
+
+# Create a separate Geometry node (`geo_fireworks`) at the object level 
+
+    [Image:city_garden::1.0/geo-nodes.png]
+
+# In that node, create an object merge that references the `(1) fireworks` output
+
+    [Image:city_garden::1.0/object-merge-node.png]
+
+# Return to the object level and view both Geometry nodes simultaneously
+
+@parameters
+
+==== Ground ==== (ground)
+
+Size:
+    #id: ground_size
+
+    Sets the _x_ and _y_ lengths of the ground plane.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[15, ∞)`
+    
+    WARNING:
+        Adjusting the ground plane dimensions after setting up the garden elements may shift garden elements.
+
+Colour:
+    #id: ground_colour
+
+    Sets the colour of the ground plane.
+
+=== Supertree === (supertree)
+
+The Supertree model is inspired by the iconic vertical gardens of Gardens by the Bay. These towering structures are not only visually striking but also serve sustainable purposes, such as collecting rainwater, generating solar energy, and housing plants that improve air quality. Supertrees blend art, nature, and technology, making them an innovative centerpiece for any garden environment.
+
+Reference || 
+    Model ||
+
+[Image:city_garden::1.0/supertree.png] || 
+    [Image:city_garden::1.0/supertree_model.png] ||
+
+Enable Operations:
+    #id: enable_supertrees
+    
+    Checking this toggle enables the <<Operation>> of the adding/removing of Supertrees.
+
+    NOTE:
+        All other viewerstate operations -- e.g. paint, or drawing curves -- with other parts of this HDA will disable this toggle.
+        
+Operation:
+    #id: operation
+    
+    *Adds*/*Removes* a Supertree to/from the scene based on selection.
+    
+    To perform either operation, first press the LMB ((LMB)) on the viewport, and press ((Enter)) to trigger the viewerstate.
+        
+    Add:
+        After entering the viewerstate, LMB ((LMB)) on the grid and release the button when your cursor is over your desired position.
+        
+        A tree belonging to the specified [Supertree Group|#supertree_grp] will be added at the desired position.
+            
+        TIP:
+            Toggle the <<Display Materials>> setting to show renderer approximations of materials (e.g. colours) in the viewer. This is especially useful when editing the colour properties of the <<Supertree>>.
+    
+    Remove:
+        Click on an existing Supertree in the scene to permanently remove it from the scene.
+        
+    TIP:
+        After adding all desired Supertrees, press ((Esc)) to exit the viewerstate. This will prevent any potential conflicts when entering other viewerstates.
+
+Group:
+    #id: group_index
+    
+    Only applicable when Operation *Add* is chosen. Selection here will assign the newly added Supertree to the corresponding group.
+
+Clear:
+    #id: clear_supertrees
+    
+    Permanently deletes all the Supertrees from the scene.
+    
+====Supertree Groups 1/2/3====(supertree_grp)
+
+This node allows you to have three variations among the Supertrees. Each variation has a set of editable parameters as below:
+
+Replace with File:
+    Enables the option to replace the <<Supertree>> with an external geometry file. 
+    
+    NOTE:
+        Replacing the <<Supertree>> with an external geometry hides certain editable parameters.
+
+Geometry File:
+    Specifies the external geometry file to replace the <<Supertree>>.
+    
+    This field is enabled only when the <<Replace with File>> is checked. 
+        
+Reload Geometry:
+    Forces a reload of the specified geometry file. This action also clears any cached data associated with packed disk primitives.
+    
+    This field is enabled only when the <<Replace with File>> is checked.
+    
+~~~Transform Geometry~~~
+This section provides parameters to modify the position, orientation, and size of the loaded geometry.
+
+NOTE:
+    This section appears only after <<Replace with File>> is enabled.
+
+Translate:
+    Translates the geometry along the xyz axes.
+
+Rotate:
+    Rotates the geometry along the xyz axes.
+
+Scale:
+    Non-uniform scaling along the xyz axes.
+    
+~~~
+
+Height:
+    Sets the height of the Supertree.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[1, ∞)`
+        
+Radius:
+    Sets the radius of the Supertree.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, ∞)`
+    
+~~~
+        
+The subsections below outline adjustable parameters for different parts of the Supertree. The parts are labelled in the image below:
+
+[Image:city_garden::1.0/supertree_render_annotated.png]
+
+~~~Outer Branches~~~
+Branch Colour:
+    Determines the colour of the outer branches of the Supertree. 
+    
+Branch Thickness:
+    Sets the radius of the branches to make the branches thicker or thinner. 
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, ∞)`
+    
+~~~Point Lights~~~
+
+This is a subsection of *Outer Branches*. Point lights are the spherical objects embedded along the branches.
+
+Remove Point Lights:
+    Check this to remove the point lights along the branches. 
+    
+    NOTE:
+        Removing Point Lights will disable the remaining parameters in this subsection.
+        
+Point Light Radius:
+    Adjusts the size of the point lights by setting the radius of each. 
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, ∞)`
+    
+Point Colour:
+    Sets the Colour of the Point Lights when they are not emitting any light (i.e. when <<Point lights intensity>> is `0`). 
+    
+    :box:
+        #display: bordered gray
+        
+        Set to be the same as <<Point Lights Colour>> by default.
+    
+    TIP:
+        This is useful to set the colour of the 'bulb' when the point lights are 'off', or if the spheres are treated as decorative additions to the branches rather than lights. (i.e. <<Point Lights Intensity>> is `0`)
+        
+        Delete channel references if <<Point Colour>> and <<Point Light Colour>> need to be the different.
+
+Point Lights Intensity:
+    Sets the strength of the light emitting from the spheres along the branches. 
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, ∞)`
+    
+Point Lights Colour:
+    Sets the emissive colour of the point lights. 
+
+~~~Inner Core~~~
+
+This section has parameters editing the inner core structure within the branching. Editable parameters are similar to _Point Lights_.
+
+Core Colour:
+    Sets the Colour of the Inner Core when it is not emitting any light (i.e. when <<Core light intensity>> is `0`).
+    
+    :box:
+        #display: bordered gray
+        
+        Set to be the same as <<Core Light Colour>> by default.
+
+    TIP:
+        This is useful to set the colour of the core when the lights are 'off'. (i.e. <<Core Light Intensity>> is `0`).
+        
+        Delete channel references if <<Core Colour>> and <<Core Light Colour>> need to be different.
+
+Core Light Intensity:
+    Sets the strength of the light emitting from the inner core.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, ∞)`
+
+Core Light Colour:
+    Sets the emissive colour of the inner core.
+
+~~~Stone Base~~~
+
+This section has parameters editing the stone base of the Supertree.
+
+Hide Stone Base:
+    Checking this toggle hides the stone base under the Supertree.
+    
+    NOTE:
+        Checking this toggle will disable the remaining parameters in this section.
+
+Stone Base Radius:
+    Sets the radius of the stone base.
+    
+    :box:
+        #display: bordered gray
+        
+        Set to `2.5x` the Supertree <<Radius>> value by default.
+        
+        Range: `[0, ∞)`
+        
+    TIP:
+        Delete channel references to remove default setting and adjust manually.
+        
+        Set field to be a function of the supertree radius to ensure the stone base scales proportionally to the Supertree radius.
+        
+Stone Base Colour:
+    Sets the colour of the stone base.
+        
+Stone Gap Size:
+    Sets the gap size between the stones.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, ∞)`
+        
+===Stone Path===
+
+This section describes the parameters to draw and edit stone paths in the scene.
+
+Draw Curve:
+    #id: draw_stone_path
+    
+    Activates the curve drawing tool to create curves on the ground plane. The stone path is generated along the specified curve.
+
+    NOTE:
+        Entering the curve tool opens the node's graph view. After completing the curve, navigate up one level to return to the HDA parameter interface.
+
+Edit Curve:
+    #id: edit_stone_path
+    
+    Activates the edit curve tool to edit existing curves on the ground plane. The stone path will adapt to the changes made on the existing curves.
+    
+    NOTE:
+        Entering the curve tool opens the node's graph view. After editing the curve, navigate up one level to return to the HDA parameter interface.
+
+Clear:
+    #id: clear_stone_path
+    
+    Clear any drawn <<Stone Path>> curves.
+
+Density Scale:
+    #id: stone_path_densityscale
+    
+    Adjusts the density of stones along the path.
+    
+    :box:
+        #display: bordered gay
+        
+        Range: `[0.001, ∞)`
+    
+Width:
+    #id: stone_path_width
+    
+    Sets the width of the Stone Path.
+    
+    :box:
+        #display: bordered gay
+        
+        Range: `[0.1, ∞)`
+    
+Colour:
+    #id: stone_path_colour
+    
+    Sets the colour of the stone paths.
+        
+    TIP:
+        To ensure Supertree <<Stone Base>> and <<Stone Path>> colours align, copy and paste relative references from one parameter to the other.
+        
+Gap Size:
+    #id: stone_path_cutplaneoffset
+    
+    Determines the gap between the stones along the stone path.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, ∞)`
+
+Path Clearance:
+    #id: path_clearance
+    
+    This parameter determines the distance around <<Paths>> and <<Supertrees>> where <<Plants>> cannot be placed. When a <<Stone Path>> or a <<Supertree>> are placed among painted plants, this parameter sets how far out the exclusion zone extends, ensuring <<Plants>> do not overlap with these structures.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, ∞)`
+        
+===Plants===
+
+====Palm Tree====
+
+The palm tree model in this node is inspired by the Traveller's Palm, a plant known for its striking, fan-like arrangement of leaves. This iconic tropical species adds a dramatic presence to landscapes and can often be seen in Gardens by the Bay.
+
+Reference || 
+    Model ||
+
+[Image:city_garden::1.0/tree.png] || 
+    [Image:city_garden::1.0/tree_model.png] ||
+
+Paint:
+    #id: paint_t_palm
+    
+    Activates the paint tool to draw strokes on the ground plane, marking regions to populate with <<Palm Trees>>.
+    
+    The brush size can be modified using the Middle Mouse Scroll ((mouse_wheel)).
+    
+    NOTE:
+        Entering the paint tool opens the node's graph view. After completing paint operation, navigate up one level to return to the HDA parameter interface.
+        
+Erase:
+    #id: erase_t_palm
+    
+    Activates the erase tool to remove painted strokes, clearing regions where <<Palm Trees>> are no longer desired.
+    
+    The brush size can be modified using the Middle Mouse Scroll ((mouse_wheel)).
+    
+    NOTE:
+        Entering the erase tool opens the node's graph view. After completing erase operation, navigate up one level to return to the HDA parameter interface.
+
+Clear:
+    #id: clear_t_palm
+    
+    Clear <<Palm Tree>> paint strokes.
+
+~~~
+    
+No. of leaves:
+    #id: leaves_num
+    
+    Sets the number of leaves on each <<Palm Tree>>.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, 33]`
+    
+Height:
+    #id: trunk_ht
+    
+    Sets the height of each <<Palm Tree>> before any scaling is performed.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, ∞)`
+    
+~~~
+
+The parameters in this section are enabled after painting <<Palm Trees>>.
+        
+Density Scale:
+    #id: painted_t_palm_density
+    
+    Adjusts the density of <<Palm Trees>> within the painted regions.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0.001, ∞)`
+        
+Range of Rotation:
+    #id: rot_range_t_palm
+    
+    Specifies the variation in rotation among all the <<Palm Trees>>. 
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[-180, 180]`
+        
+    TIP:
+        Set to `[0, 0]` to have all the trees facing the same direction.
+        
+Range of Scale:
+    #id: scale_range_t_palm
+    
+    Specifies the variation in scale among all <<Palm Trees>>.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, ∞)`
+
+Seed:
+    #id: seed_t_palm
+    
+    This parameter randomnizes the placement of the <<Palm Trees>>.
+    
+    NOTE:
+        When painting multiple plants over each other, the plants may at times overlap. Adjust this setting as needed to get the desired placement.
+    
+~~~
+
+Replace with File:
+    #id: replace_t_palm
+    
+    Enables the option to replace the <<Palm Tree>> with an external geometry file. 
+    
+    NOTE:
+        Replacing the <<Palm Tree>> with an external geometry disables certain editable parameters.
+
+Geometry File:
+    #id: file_t_palm
+    
+    Specifies the external geometry file to replace the <<Palm Tree>>. 
+    
+    This field is enabled only when the <<Replace with File>> is checked. 
+    
+Reload Geometry:
+    #id: reload_t_palm
+    
+    Forces a reload of the specified geometry file. This action also clears any cached data associated with packed disk primitives.
+
+~~~Transform Geometry~~~
+
+This section provides parameters to modify the position, orientation, and size of the loaded geometry. 
+
+NOTE:
+    This section appears only after <<Replace with File>> is enabled.
+
+NOTE:
+    These transformations are applied to the geometry *before* the enabled parameters defined above, such as <<Range of Rotation>> and <<Range of Scale>>.
+    
+Translate:
+    #id: t_t_palm
+    
+    Translates the geometry along the xyz axes.
+
+Rotate:
+    #id: r_t_palm
+    
+    Rotates the geometry along the xyz axes.
+
+Scale:
+    #id: s_t_palm
+    
+    Non-uniform scaling along the xyz axes.
+        
+====Grass====
+
+The grass model represents the lush greenery that forms the foundation of many garden landscapes, creating a natural and seamless connection between plant life.
+
+Reference || 
+    Model ||
+
+[Image:city_garden::1.0/grass.png] || 
+    [Image:city_garden::1.0/grass_model.png] ||
+
+Paint:
+    #id: paint_grass
+
+    Activates the paint tool to draw strokes on the ground plane, marking regions to populate with <<Grass>> Tufts.
+    
+    The brush size can be modified using the Middle Mouse Scroll ((mouse_wheel)).
+    
+    NOTE:
+        Entering the paint tool opens the node's graph view. After completing paint operation, navigate up one level to return to the HDA parameter interface.
+        
+Erase:
+    #id: erase_grass
+
+    Activates the erase tool to remove painted strokes, clearing regions where <<Grass>> Tufts are no longer desired.
+    
+    The brush size can be modified using the Middle Mouse Scroll ((mouse_wheel)).
+    
+    NOTE:
+        Entering the erase tool opens the node's graph view. After completing erase operation, navigate up one level to return to the HDA parameter interface.
+
+Clear:
+    #id: clear_grass
+
+    Clear <<Grass>> Tufts paint strokes.
+        
+~~~
+
+The parameters in this section are enabled after painting <<Grass>> Tufts.
+
+Density Scale:
+    #id: painted_grass_density
+
+    Adjusts the density of <<Grass>> Tufts within the painted regions.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0.001, ∞)`
+
+Range of Scale:
+    #id: scale_range_grass
+
+    Specifies the variation in scale among all <<Grass>> Tufts.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, ∞)`
+        
+Seed:
+    #id: seed_grass
+    
+    This parameter randomnizes the placement of the <<Grass>> Tufts.
+    
+    NOTE:
+        When painting multiple plants over each other, the plants may at times overlap. Adjust this setting as needed to get the desired placement.    
+~~~
+
+Replace with File:
+    #id: replace_grass
+
+    Enables the option to replace the <<Grass>> Tuft with an external geometry file. 
+    
+    NOTE:
+        Replacing the <<Grass>> Tuft with an external geometry disables certain editable parameters.
+
+Geometry File:
+    #id: file_grass
+
+    Specifies the external geometry file to replace the <<Grass>> Tuft.
+    
+    This field is enabled only when the <<Replace with File>> is checked. 
+    
+Reload Geometry:
+    #id: reload_grass
+
+    Forces a reload of the specified geometry file. This action also clears any cached data associated with packed disk primitives.
+    
+    This field is enabled only when the <<Replace with File>> is checked.
+    
+~~~Transform Geometry~~~
+
+This section provides parameters to modify the position, orientation, and size of the loaded geometry. 
+
+NOTE:
+    This section appears only after <<Replace with File>> is enabled.
+    
+NOTE:
+    These transformations are applied to the geometry *before* the enabled parameters defined above, such as <<Range of Rotation>> and <<Range of Scale>>.
+
+Translate:
+    #id: t_grass
+    
+    Translates the geometry along the xyz axes.
+
+Rotate:
+    #id: r_grass
+    
+    Rotates the geometry along the xyz axes.
+
+Scale:
+    #id: s_grass
+    
+    Non-uniform scaling along the xyz axes.
+    
+====Orchid====
+
+The orchid model is inspired by the _Vanda Miss Joaquim_, a hybrid orchid that was designated as the national flower of Singapore.
+
+Reference || 
+    Model ||
+
+[Image:city_garden::1.0/orchid.png] || 
+    [Image:city_garden::1.0/orchids_model.png] ||
+
+Paint:
+    #id: paint_orchid
+    
+    Activates the paint tool to draw strokes on the ground plane, marking regions to populate with <<Orchids>>.
+    
+    The brush size can be modified using the Middle Mouse Scroll ((mouse_wheel)).
+    
+    NOTE:
+        Entering the paint tool opens the node's graph view. After completing paint operation, navigate up one level to return to the HDA parameter interface.
+        
+Erase:
+    #id: erase_orchid
+    
+    Activates the erase tool to remove painted strokes, clearing regions where <<Orchids>> are no longer desired.
+    
+    The brush size can be modified using the Middle Mouse Scroll ((mouse_wheel)).
+    
+    NOTE:
+        Entering the erase tool opens the node's graph view. After completing erase operation, navigate up one level to return to the HDA parameter interface.
+
+Clear:
+    #id: clear_orchid
+    
+    Clear <<Orchid>> paint strokes.
+
+~~~
+    
+Orchid Coverage:
+    #id: orchid_coverage
+    
+    Controls the proportion of the stem covered with orchids. Flowers are always clustered at the upper part of the stem, and increasing this value expands the coverage downward, resulting in more flowers on the stem.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, 1]`
+
+~~~
+
+The parameters in this section are enabled after painting <<Orchids>>.
+        
+Density Scale:
+    #id: painted_orchid_density
+    
+    Adjusts the density of <<Orchids>> within the painted regions.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0.001, ∞)`
+        
+Range of Scale:
+    #id: scale_range_orchid
+    
+    Specifies the variation in scale among all <<Orchids>>.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, ∞)`
+
+Seed:
+    #id: seed_orchid
+    
+    This parameter randomnizes the placement of the <<Orchids>>.
+    
+    NOTE:
+        When painting multiple plants over each other, the plants may at times overlap. Adjust this setting as needed to get the desired placement.   
+~~~
+
+Replace with File:
+    #id: replace_orchid
+    
+    Enables the option to replace the <<Orchid>> with an external geometry file. 
+    
+    NOTE:
+        Replacing the <<Orchid>> with an external geometry disables certain editable parameters.
+
+Geometry File:
+    #id: file_orchid
+    
+    Specifies the external geometry file to replace the <<Orchid>>.
+    
+    This field is enabled only when the <<Replace with File>> is checked. 
+    
+Reload Geometry:
+    #id: reload_orchid
+    
+    Forces a reload of the specified geometry file. This action also clears any cached data associated with packed disk primitives.
+    
+    This field is enabled only when the <<Replace with File>> is checked.
+    
+~~~Transform Geometry~~~
+
+This section provides parameters to modify the position, orientation, and size of the loaded geometry. 
+
+NOTE:
+    This section appears only after <<Replace with File>> is enabled.
+    
+NOTE:
+    These transformations are applied to the geometry *before* the enabled parameters defined above, such as <<Range of Rotation>> and <<Range of Scale>>.
+
+Translate:
+    #id: t_orchid
+    
+    Translates the geometry along the xyz axes.
+
+Rotate:
+    #id: r_orchid
+    
+    Rotates the geometry along the xyz axes.
+
+Scale:
+    #id: s_orchid
+    
+    Non-uniform scaling along the xyz axes.
+    
+====Skimmia Bush====
+
+The Japanese Skimmia, with its compact structure and clusters of fragrant flowers, is a popular ornamental plant that adds vibrancy and texture to gardens like those at Gardens by the Bay.
+
+Reference || 
+    Model ||
+
+[Image:city_garden::1.0/skimmia.png] || 
+    [Image:city_garden::1.0/skimmia_model.png] ||
+
+Paint:
+    #id: paint_skimmia
+    
+    Activates the paint tool to draw strokes on the ground plane, marking regions to populate with <<Skimmia Bushes>>.
+    
+    The brush size can be modified using the Middle Mouse Scroll ((mouse_wheel)).
+    
+    NOTE:
+        Entering the paint tool opens the node's graph view. After completing paint operation, navigate up one level to return to the HDA parameter interface.
+        
+Erase:
+    #id: erase_skimmia
+    
+    Activates the erase tool to remove painted strokes, clearing regions where <<Skimmia bushes>> are no longer desired.
+    
+    The brush size can be modified using the Middle Mouse Scroll ((mouse_wheel)).
+    
+    NOTE:
+        Entering the erase tool opens the node's graph view. After completing erase operation, navigate up one level to return to the HDA parameter interface.
+
+Clear:
+    #id: clear_skimmia
+    
+    Clear <<Skimmia Bush>> paint strokes.
+
+~~~
+
+Berries Coverage:
+    #id: berries_coverage
+
+    Controls the proportion of the bush covered with berries.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, 1]`
+
+~~~
+
+The parameters in this section are enabled after painting <<Skimmia Bushes>>.
+
+Density Scale:
+    #id: painted_skimmia_density
+    
+    Adjusts the density of <<Skimmia Bushes>> within the painted regions.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0.001, ∞)`
+
+Range of Scale:
+    #id: scale_range_skimmia
+    
+    Specifies the variation in scale among all <<Skimmia Bushes>>.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, ∞)`
+
+Seed:
+    #id: seed_skimmia
+    
+    This parameter randomnizes the placement of the <<Skimmia Bushes>>.
+    
+    NOTE:
+        When painting multiple plants over each other, the plants may at times overlap. Adjust this setting as needed to get the desired placement.   
+~~~
+
+Replace with File:
+    #id: replace_skimmia
+    
+    Enables the option to replace the <<Skimmia Bush>> with an external geometry file. 
+    
+    NOTE:
+        Replacing the <<Skimmia Bush>> with an external geometry disables certain editable parameters.
+
+Geometry File:
+    #id: file_skimmia
+    
+    Specifies the external geometry file to replace the <<Skimmia Bush>>.
+    
+    This field is enabled only when the <<Replace with File>> is checked. 
+
+Reload Geometry:
+    #id: reload_skimmia
+
+    Forces a reload of the specified geometry file. This action also clears any cached data associated with packed disk primitives.
+    
+    This field is enabled only when the <<Replace with File>> is checked.
+
+~~~Transform Geometry~~~
+
+This section provides parameters to modify the position, orientation, and size of the loaded geometry. 
+
+NOTE:
+    This section appears only after <<Replace with File>> is enabled.
+    
+NOTE:
+    These transformations are applied to the geometry *before* the enabled parameters defined above, such as <<Range of Rotation>> and <<Range of Scale>>.
+
+Translate:
+    #id: t_skimmia
+    
+    Translates the geometry along the xyz axes.
+
+Rotate:
+    #id: r_skimmia
+    
+    Rotates the geometry along the xyz axes.
+
+Scale:
+    #id: s_skimmia
+    
+    Non-uniform scaling along the xyz axes.
+
+====Area Patches====
+
+<<Area Patches>> are designated regions within which specified plants are distributed. These areas can optionally include a raised platform beneath the plants to create a refined, manicured appearance for the greenery in the scene.
+
+Similar to how *Groups* operate in [Supertree Groups|#supertree_grp], each of the three *Groups* here allow for a distinct variation in <<Area Patches>>.
+
+NOTE:
+    Each group can contain multiple <<Area Patches>>, depending on how the curves are drawn.
+
+:fig:[Image:city_garden::1.0/areapatch.png]
+
+~~~Groups 1/2/3~~~
+
+Plant Toggles:
+    Palm Trees:
+        Enables or disables the addition of <<Palm Trees>> to the selected <<Area Patches>>.
+        
+    Grass:
+        Enables or disables the addition of <<Grass>> Tufts to the selected <<Area Patches>>.
+        
+    Orchids:
+        Enables or disables the addition of <<Orchids>> to the selected <<Area Patches>>.
+        
+    Skimmia Bush:
+        Enables or disables the addition of <<Skimmia Bushes>> to the selected <<Area Patches>>.
+
+Draw Curve:
+    Activates the curve drawing tool to outline the shape of an <<Area Patch>> on the ground plane.
+
+    NOTE:
+        Entering the curve tool opens the node's graph view. After completing the curve, navigate up one level to return to the HDA parameter interface.
+        
+    TIP:
+        To achieve the best results, draw curves that outline the intended polygons for the scene. 
+        
+        While curves do not need to be closed, ensuring closure prevents nearby patches from being grouped together inadvertently.
+
+Edit Curve:
+    Activates the curve editing tool to modify existing curves on the ground plane. <<Area Patches>> automatically adapt to the changes made to these curves.
+    
+    NOTE:
+        Entering the curve tool opens the node's graph view. After editing the curve, navigate up one level to return to the HDA parameter interface.
+
+Clear:
+    Clear <<Area Patch>> curves.
+        
+~~~
+
+The parameters in this section are enabled if at least one of the plants is selected under <<Plant Toggles>>.
+
+Density Scale:
+    Adjusts the density of the selected <<Plants>> within the painted regions.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0.001, ∞)`
+        
+Range of Rotation:
+    Specifies the variation in rotation among all the selected <<Plants>>. 
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[-180, 180]`
+        
+    TIP:
+        Set to `[0, 0]` to have all the <<Plants>> facing the same direction.
+        
+Range of Scale:
+    Specifies the variation in scale among all the selected <<Plants>>.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, ∞)`
+
+Inward Offset:
+    Sets the distance from the edge of the Area Patch where plants will not be placed. A higher value increases the buffer zone near the edges, reducing plant placement in those areas.
+
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, ∞)`
+
+Supertree Clearance:
+    This parameter determines the distance around <<Supertrees>> where <<Plants>> cannot be placed. When a <<Supertree>> is placed on an <<Area patch>>, this parameter sets how far out the exclusion zone extends, ensuring <<Plants>> do not overlap with the <<Supertree>>.
+
+    :box:
+        #display: bordered gray
+        
+        Range: `[0, ∞)`
+~~~
+
+Hide Base:
+    Checking this toggle hides the base of the <<Area Patch>>.
+    
+    NOTE:
+        Checking this toggle will disable the remaining paramters in this section.
+        
+Base Colour:
+    Determines the colour of the base <<Area Patch>>.
+        
+Base Height:
+    Adjust to set the height of the base.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[0.01, ∞)`
+
+===Fireworks===
+
+Fireworks are a staple of celebrations along the vibrant Singapore skyline, with Gardens by the Bay often serving as a stunning backdrop. This section lets you integrate dynamic fireworks into your garden scene, capturing the festive spirit of Singapore's iconic views.
+
+:video:
+    #src: city_garden::1.0/fireworks3.mp4
+
+<<Fireworks>> have two colours -- <<Colour 1>> and <<Colour 2>>. 
+    
+Colour 1 Ramp:
+    #id: color_ramp_1
+    
+    Defines the gradient for the first set of fireworks, allowing you to customize their colour transitions.
+    
+    :box:
+        #display: bordered gray:
+        
+        By default, gradient from 
+        
+        `RGB(1.0, 1.0, 0.0)` (_Yellow_) -> `RGB(1.0, 0.5, 0.0)` (_Orange_) -> `RGB(1.0, 0.3, 0.0)` (_Darker Orange_)
+        
+        evenly spaced.
+        
+Colour 2 Ramp:
+    #id: color_ramp_2
+    
+    Defines the gradient for the second set of fireworks, allowing you to customize their colour transitions.
+    
+    :box:
+        #display: bordered gray:
+        
+        By default, gradient from 
+        
+        `RGB(1.0, 1.0, 1.0)` (_White_) -> `RGB(1.0, 0.0, 0.0)` (_Red_) -> `RGB(0.2, 0.0, 0.0)` (_Darker Red_)
+        
+        evenly spaced.
+
+~~~Cache Settings~~~
+
+Load from Disk:
+    #id: loadfromdisk
+    
+    When this is on, the node reads its output from the cached disk files, rather than cooking its input.
+    When you click <<Save to Disk>> or <<Save to Disk in Background>> to write out the cache files, the node automatically turns this checkbox on.
+
+Reload Geometry:
+    #id: reload_geo
+    
+    Force a reload of the file. This will also clear any cached data for packed disk primitives.
+    
+Geometry File:
+    #id: fireworks_cache_file
+    
+    This node uses the file path expression to generate the cache file path(s). This expression should include all the variables you want in the path (including the frame number when Time dependent cache is on)
+    
+    :box:
+        #display: bordered gray
+        
+        `$HIP/cache/$OS/$OS.$F.bgeo.sc` by default, where `$HIP` is the project directory.
+
+Open Directory:
+    This parameter provides a convenient way to open the directory containing the cached fireworks geometry. It uses the path specified in the Geometry File parameter. Clicking this button opens the directory in your system’s file explorer, making it easier to locate and manage the cached files.
+    
+~~~Cache Controls~~~
+
+This is a subsection of <<Cache Settings>>.
+
+TIP:
+    <<Cache Controls>> subsection is collapsible to prevent accidental clicking and rebuilding of the cache.
+
+Save to Disk:
+    #id: execute
+    
+    Saves the geometry to disk with the last control settings.
+
+Save to Disk in Background:
+    #id: cookoutputnode
+    
+    Use a TOP network to cook and save the cache files to disk in a separate background process. This allows you to keep working on other parts of Houdini. The cached frames will show up as they are completed by the other process.
+    
+Cancel Cook:
+    #id: dirtyall
+    
+    Stops all background caching processes, if any exist.
+
+===Render===
+
+Render View:
+    Clicking this button changes the view to the Render view. Set the Renderer to <<Karma CPU>> if not already set.
+    
+    NOTE:
+        Your current Context View should change. If it does not, modify the pane settings to link to the network view pane.
+
+    NOTE:
+        Clicking this button enters the LOP Network of this node. Navigate up two levels to return to the HDA parameter interface.
+    
+~~~Sky Appearance~~~
+
+This section exposes certain parameters from the [karma physical sky node|Node:lop/karmaphysicalsky].
+
+Disable Physical Sky:
+    When checked, this toggle disables the Physical Sky in the render view.
+    
+    NOTE:
+        Checking this toggle disables the rest of the parameters in this section.
+
+Time:
+    Specify the time of the day to determine the sky’s colours. The dropdown menu lets you switch between *24hr*, *AM* and *PM* time displays.
+        
+Turbidity:
+    Measure of the aerosol content of the air which defines the sky appearance.
+    
+    :box:
+        #display: bordered gray
+        
+        Range: `[1, ∞)`
+        
+@related
+* 
+* [Node:lop/karmaphysicalsky]
+
+@references
+{{{
+cgwiki discord, 2021.  Houdini 30s Quick Tip #18 - Tuft of Grass with KINEFX [video]. YouTube. Available from: https://www.youtube.com/@cgwikidiscord1277 [Accessed 7 December 2024]
+Balou46, 2013. SG-gardens-bay-supertree-grove.jpg [photograph] Singapore: Wikimedia Commons. Available from: https://commons.wikimedia.org/wiki/File:SG-gardens-bay-supertree-grove.jpg [Accessed 9 January 2025]
+Garden, T., 2012. Papilionanthe (Vanda) Miss Joaquim 'Douglas'.jpg [photograph] Singapore: Wikimedia Commons. Available from: https://commons.wikimedia.org/wiki/File:Papilionanthe_(Vanda)_Miss_Joaquim_'Douglas'.jpg [Accessed 27 December 2024]
+Gazdar, C. 2023.  Creating a Procedural Leaf Recipe in Houdini - Intermediate Tutorial [video]. YouTube. Available from: https://www.youtube.com/watch?v=s5RwLhmLzHM&ab_channel=ChetalGazdar [Accessed 18 November 2024]
+Hamlet, T., 2018. Skimmia japonica - Norwich: geograph.org.uk - 5775107.jpg [photograph] geography.org.uk. Available from: https://commons.wikimedia.org/wiki/File:Skimmia_japonica_-_geograph.org.uk_-_5775107.jpg [Accessed 27 December 2024]
+Kerans, M., 2015. Elmstead Woods Long Grass - geograph.org.uk - 5588793.jpg [photograph] London: geography.org.uk. Available from: https://commons.wikimedia.org/wiki/File:Elmstead_Woods_Long_Grass_-_geograph.org.uk_-_5588793.jpg [Accessed 27 December 2024]
+Patibanda, H., 2013. Singapore Gardens by the Bay Supertree Grove [photograph] Singapore: Flickr. Available from: https://www.flickr.com/photos/krishnacolor/8721367605 [Accessed 9 January 2025]
+Pixel Fondue, 2021.  Houdini | Create a Cobblestone Path [video]. YouTube. Available from: https://www.youtube.com/watch?v=QH6Kk7_AJec&ab_channel=PixelFondue [Accessed 27 November 2024]
+Schwarzbach, U., 2014. Supertree Grove in the Gardens by the Bay seen from the roof of the Marina Bay Sands Hotel, Singapore [photograph] Singapore: Flickr. Available from: https://www.flickr.com/photos/uwebkk/13105159184 [Accessed 9 January 2025]
+Shebs, S., 2006. Fajardo El Conquistador traveller tree.jpg [photograph]. Wikimedia Commons. Available from: https://commons.wikimedia.org/wiki/File:Fajardo_El_Conquistador_traveller_tree.jpg [Accessed 26 December 2024]
+SideFX, 2024. Houdini 20.5 Documentation. SideFX. Available from: https://www.sidefx.com/docs/houdini/ [Accessed 14 November 2024]
+tee_eric, 2012. Gardens by the Bay [photograph] Singapore: Flickr. Available from: https://www.flickr.com/photos/11499787@N00/7477057780 [Accessed 9 January 2025]
+VFX Magic, Joraval, H., 2023.  Houdini 20 | Introduction to Particles I - Fireworks | Nuke [video]. YouTube. Available from: https://www.youtube.com/watch?v=4bzdiZ8H9CY&t=6377s&ab_channel=VFXMagic [Accessed 4 December 2024]
+}}}
