@@ -44,11 +44,11 @@ Refer to the HDA help card for more details.
 
 | Feature    | Overview                                    |
 | ---------- | ------------------------------------------- |
-| Supertrees | ![image](./aux_files/videos/supertree.gif)  |
-| Stone Path | ![image](./aux_files/videos/stonepath.gif)  |
-| Plants     | ![image](./aux_files/videos/plant.gif)      |
-| Area Patch | ![image](./aux_files/videos/areapatch.gif)  |
-| Fireworks  | ![image](./aux_files/videos/fireworks3.gif) |
+| Supertrees | ![image](./aux_files/gifs/supertree.gif)  |
+| Stone Path | ![image](./aux_files/gifs/stonepath.gif)  |
+| Plants     | ![image](./aux_files/gifs/plant.gif)      |
+| Area Patch | ![image](./aux_files/gifs/areapatch.gif)  |
+| Fireworks  | ![image](./aux_files/gifs/fireworks3.gif) |
 
 ### View full timelapse demo [here](https://youtu.be/CyMr2AO3vH8).
 
